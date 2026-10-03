@@ -30,7 +30,7 @@ The device was disconnected following the latest crash. Hardware streaming, serv
 
 ## Candidate source and offline checks
 
-The candidate adds portable selection across USB locations, optional explicit location pinning, mapping reclamation without the old lifetime cap, a pinned-dependency build and an exact-manifest installer. Seven native contract groups passed with address/undefined-behavior sanitizers, including the actual USB profile validator, HAL callbacks and 10,000 concurrent mapping reconnects. Eighteen filesystem tests passed for installation, replacement, rollback, interrupted transactions, orphan journals, uninstall, symlink/path rejection and restrictive umasks. These are offline results; no candidate installation or hardware test was performed.
+The candidate adds portable selection across USB locations, optional explicit location pinning, mapping reclamation without the old lifetime cap, a pinned-dependency build and an exact-manifest installer. A fresh local clone downloaded and hash-verified the dependency, built with the macOS 27.0 SDK and Apple clang 21.0.0, and passed all tests. Seven native contract groups passed with address/undefined-behavior sanitizers, including the actual USB profile validator, HAL callbacks and 10,000 concurrent mapping reconnects. Eighteen filesystem tests passed for installation, replacement, rollback, interrupted transactions, orphan journals, uninstall, symlink/path rejection and restrictive umasks. Four archive tests passed for exact sidecars/tools and rejection of recordings, firmware, crash reports and changed binaries. These are offline results; no candidate installation or hardware test was performed.
 
 Use `python3 tools/test.py --offline` after the dependency archive has been fetched. The tool writes `build/test-results.json` and runs native contracts under AddressSanitizer/UndefinedBehaviorSanitizer plus installer filesystem tests and CLI rejection guards. It opens no USB device and performs no system installation or launchd action. Record the candidate commit/archive hash, SDK/compiler, test report and complete result when accepting an offline build. Do not substitute a test count or compilation success for hardware acceptance.
 
@@ -39,7 +39,7 @@ Use `python3 tools/test.py --offline` after the dependency archive has been fetc
 | Gate | Required acceptance | Current status |
 | --- | --- | --- |
 | Latest panic | Investigate launchd failure; establish a bounded, recoverable path for resumed testing | Open; hardware hold |
-| Clean source build | Fresh-directory build, pinned archive verification, complete tests, curated source scan | Work in progress; no hardware proof |
+| Clean source build | Fresh-directory build, pinned archive verification, complete tests, curated source scan | Passed in a fresh local clone; 7 native groups and 22 Python tests; no hardware proof |
 | Managed installation | Fresh install, replacement, removal, injected failure and interrupted-transaction recovery | 18 offline filesystem tests passed; live operations unqualified |
 | Existing prototype migration | Preserve known working payload and verified rollback before any replacement | Not performed |
 | Playback and input | New candidate heard at a quiet level; DI input 1 recorded/replayed with valid counters | Historical prototype only |
@@ -48,7 +48,7 @@ Use `python3 tools/test.py --offline` after the dependency archive has been fetc
 | Long session | Defined-duration playback/recording under representative desktop/DAW load | Unqualified |
 | Portability | Another Mac and another original Mbox 2 on firmware 1.43 | Unqualified |
 | Latency | Measured round-trip latency and stable useful buffer settings | Unqualified; conservative buffering |
-| Distribution | Curated archive review, licence notices, appropriate signatures/notarization and explicit publication approval | Private local preparation only |
+| Distribution | Curated archive review, licence notices, appropriate signatures/notarization and explicit publication approval | Private source/developer archives prepared; privacy/allowlist/signature checks passed; ad-hoc only, unnotarized, unpublished |
 
 Physical MIDI input/output can remain an explicit experimental limitation of an audio-focused alpha, but it must not be advertised as qualified. Input 2, phantom power and S/PDIF must remain unqualified until attended tests establish their behavior. Hardware-rate switching beyond 48 kHz is outside this alpha.
 
