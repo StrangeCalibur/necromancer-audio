@@ -1,0 +1,15 @@
+.cache/
+build/
+dist/
+__pycache__/
+*.pyc
+.DS_Store
+*.wav
+*.aiff
+*.mp3
+*.ips
+*.log
+.env*
+*.p12
+*.p8
+*.mobileprovision

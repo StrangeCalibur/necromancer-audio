@@ -1,0 +1,9 @@
+{
+  "libASPL": {
+    "repository": "https://github.com/gavv/libASPL",
+    "commit": "633e0f70203edd87d320fc5a3cae901e1363aac5",
+    "archive": "https://codeload.github.com/gavv/libASPL/tar.gz/633e0f70203edd87d320fc5a3cae901e1363aac5",
+    "sha256": "8583fb549419eab14b5c636ee4eb1f0b1df74c534eaf2f990d8bb0fb5de6e01b",
+    "licenses": ["LICENSE", "LICENSE.apple2012", "LICENSE.apple2020"]
+  }
+}
