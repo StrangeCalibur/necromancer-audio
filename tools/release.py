@@ -16,6 +16,11 @@ ROOT = Path(__file__).resolve().parents[1]
 ALLOWED_ROOTS = {"src", "tests", "tools", "docs", ".github"}
 ALLOWED_TOP = {".gitignore", "AGENTS.md", "README.md", "LICENSE", "VERSION", "Makefile",
                "dependencies.json", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md", "CONTRIBUTING.md"}
+PROJECT_ONLY = {"CONTINUUM_AGENT_INSTRUCTIONS.md", ".continuum/.gitignore",
+                ".continuum/kanban.project.json", ".continuum/kanban.setup.md",
+                ".continuum/agent.onboarding.md", ".continuum/custom-instructions-snippet.md",
+                ".continuum/agent_enter.py", ".continuum/install_agent_instructions.py",
+                ".continuum/kanban.secret.env.example"}
 TEXT_SUFFIXES = {".m", ".mm", ".h", ".hpp", ".c", ".cpp", ".py", ".md", ".json", ".yml", ".yaml"}
 DEVELOPER_TOOLS = {"mbox_midi_bridge", "audio_inventory", "mbox_coreaudio_test", "mbox_midi_test", "midi_inventory"}
 PRIVATE_PATTERNS = [
@@ -46,6 +51,13 @@ def source_files():
         name = raw.decode()
         path = Path(name)
         full = ROOT / path
+        if name in PROJECT_ONLY:
+            if full.is_symlink() or not full.is_file() or full.stat().st_size > 2 * 1024 * 1024:
+                raise RuntimeError("Invalid project coordination file: " + name)
+            data = full.read_bytes()
+            data.decode("utf-8")
+            scan_bytes(data, name)
+            continue
         if path.parts[0] not in ALLOWED_ROOTS and name not in ALLOWED_TOP:
             raise RuntimeError("Uncurated tracked path: " + name)
         if name not in ALLOWED_TOP and path.suffix not in TEXT_SUFFIXES:
@@ -55,6 +67,9 @@ def source_files():
         data = full.read_bytes()
         data.decode("utf-8")
         scan_bytes(data, name)
+        if name == "AGENTS.md":
+            data = re.sub(rb"<!-- continuum-agent-fast-path:start -->.*?<!-- continuum-agent-fast-path:end -->\s*",
+                          b"", data, flags=re.DOTALL)
         files.append((name, data, 0o644))
     return files
 

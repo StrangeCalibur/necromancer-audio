@@ -6,6 +6,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 import release
@@ -58,6 +59,29 @@ class ArchiveTests(unittest.TestCase):
         (self.prepared / "tools/audio_inventory").write_text("wrong binary")
         with self.assertRaisesRegex(RuntimeError, "tool hash mismatch"):
             release.developer_files(self.prepared, self.manifest, self.root)
+
+
+class SourceCoordinationTests(unittest.TestCase):
+    def test_project_coordination_is_omitted_and_agent_block_is_removed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".continuum").mkdir()
+            (root / ".continuum/kanban.project.json").write_text('{"project_id":"private-project"}')
+            (root / "CONTINUUM_AGENT_INSTRUCTIONS.md").write_text("private project coordination")
+            (root / "AGENTS.md").write_text("<!-- continuum-agent-fast-path:start -->\nprivate coordination\n<!-- continuum-agent-fast-path:end -->\n\n# Standalone instructions\n")
+            names = b".continuum/kanban.project.json\0CONTINUUM_AGENT_INSTRUCTIONS.md\0AGENTS.md\0"
+            with mock.patch.object(release, "ROOT", root), mock.patch.object(release, "git", side_effect=[b"", names]):
+                files = release.source_files()
+            self.assertEqual(files, [("AGENTS.md", b"# Standalone instructions\n", 0o644)])
+
+    def test_tracked_secret_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".continuum").mkdir()
+            (root / ".continuum/kanban.secret.env").write_text("secret")
+            with mock.patch.object(release, "ROOT", root), mock.patch.object(release, "git", side_effect=[b"", b".continuum/kanban.secret.env\0"]):
+                with self.assertRaisesRegex(RuntimeError, "Uncurated tracked path"):
+                    release.source_files()
 
 
 if __name__ == "__main__":

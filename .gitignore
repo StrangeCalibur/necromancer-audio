@@ -1,4 +1,8 @@
 .cache/
+private/
+.continuum/kanban.secret.env
+.continuum/*.log
+.continuum/__pycache__/
 build/
 dist/
 __pycache__/

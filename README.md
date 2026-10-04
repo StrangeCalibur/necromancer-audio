@@ -6,6 +6,8 @@ Experimental native macOS audio support for the original Digidesign/Avid Mbox 2 
 
 An earlier prototype produced audible CoreAudio playback and recorded a guitar through DI input 1. This repository prepares that work for a reproducible build and a carefully qualified alpha. Source tests, a successful build and historical listening results are separate forms of evidence; none clears the current hardware or release gates.
 
+The private development checkout is onboarded to Continuum project `mbox2_driver`, board `main`; read `CONTINUUM_AGENT_INSTRUCTIONS.md` and use the generated `.continuum/agent_enter.py` helper. Historical research and evidence are retained locally in ignored `private/` directories. Curated source archives omit project-specific coordination files and contain the repository's standalone agent guidance.
+
 ## Scope
 
 | Item | Current scope |
