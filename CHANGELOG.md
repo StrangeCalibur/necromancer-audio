@@ -2,7 +2,7 @@
 
 ## 0.1.0-alpha.1 — private preparation
 
-This candidate is prepared locally and has not been installed on hardware or cleared for publication.
+This candidate is prepared locally and remains uncleared for public release while external-alpha qualification continues.
 
 - Extracted the native Mbox 2 audio transport and CoreAudio HAL into a standalone source tree.
 - Restricted support to the original `0x0dba:0x3000` runtime profile with existing firmware 1.43, arm64 macOS 26.4+ and 48 kHz stereo duplex audio.
@@ -13,4 +13,4 @@ This candidate is prepared locally and has not been installed on hardware or cle
 - Kept MIDI opt-in and its user bridge foreground-only; physical DIN qualification remains open.
 - Added curated architecture, installation, provenance and qualification documentation without private recordings, raw machine logs or proprietary firmware.
 
-Hardware qualification is on hold following the latest launchd assertion panic. Historical prototype playback/input results are retained as evidence with their limits; they do not qualify this candidate.
+Hardware qualification resumed on 2026-10-04 after the 2026-10-03 launchd panic was traced to an unrelated legacy Prism ancestor process. The original Mbox 2 remained connected and visible to macOS throughout the attended day with no observed instability. Historical prototype playback/input results remain separately documented with their limits; additional lifecycle, sustained audio-load and portability checks are still required before public release.
