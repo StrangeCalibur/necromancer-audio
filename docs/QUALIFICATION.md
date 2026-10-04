@@ -1,6 +1,6 @@
 # Qualification and release gates
 
-**As of 2026-10-03: private local alpha preparation. Hardware work is on hold after a system panic. This new `0.1.0-alpha.1` candidate has not been installed or qualified on hardware.**
+**As of 2026-10-04: private local alpha preparation. The hardware hold has been lifted. The 2026-10-03 launchd panic was traced to an unrelated legacy Prism ancestor process, and the original Mbox 2 has since remained connected and visible to macOS throughout an attended day with no observed instability. Full external-alpha qualification is still in progress.**
 
 Keep source/build proof, offline contract tests, live transport evidence and human listening/input acceptance separate. Historical prototype results do not prove a modified candidate is safe or ready to distribute.
 
@@ -21,16 +21,16 @@ These results support continued development, not a compatibility claim for anoth
 
 ## System crash gates
 
-Two distinct crashes are relevant to release qualification:
+Two distinct crashes are retained in the qualification history:
 
 - A historical IOUSBHost kernel panic occurred while an earlier experiment mixed native initialization and libusb ownership. That experimental path is quarantined and excluded from this candidate. It must not be restored as a fallback.
-- At 19:45:44 UTC on 2026-10-03, the running system panicked after `launchd` exited on an assertion. Inspection of the matching local binary located the assertion in job-monitor handling after a Mach `KERN_NO_SPACE` result. The responsible job and causal relationship to the background Mbox prototype remain unknown. The report does not establish that USB or this candidate caused it.
+- At 19:45:44 UTC on 2026-10-03, the running system panicked after `launchd` exited on an assertion. Follow-up investigation traced this event to an unrelated legacy Prism ancestor process that was still running, not to Necromancer Audio. The incident therefore no longer blocks Mbox hardware testing.
 
-The device was disconnected following the latest crash. Hardware streaming, service changes and candidate installation remain on hold while the incident is investigated. A release must document the investigation outcome and evidence supporting any resumed hardware test. Raw panic reports, machine identifiers, local logs and private recordings are excluded from curated release documents and archives.
+Hardware testing resumed on 2026-10-04. The original Mbox 2 remained connected and visible to macOS throughout the attended day with no observed instability. This clears the incident hold but does not replace the remaining lifecycle, audio-load, recovery and portability qualification. Raw panic reports, machine identifiers, local logs and private recordings remain excluded from curated release documents and archives.
 
 ## Candidate source and offline checks
 
-The candidate adds portable selection across USB locations, optional explicit location pinning, mapping reclamation without the old lifetime cap, a pinned-dependency build and an exact-manifest installer. A fresh local clone downloaded and hash-verified the dependency, built with the macOS 27.0 SDK and Apple clang 21.0.0, and passed all tests. Seven native contract groups passed with address/undefined-behavior sanitizers, including the actual USB profile validator, HAL callbacks and 10,000 concurrent mapping reconnects. Eighteen filesystem tests passed for installation, replacement, rollback, interrupted transactions, orphan journals, uninstall, symlink/path rejection and restrictive umasks. Four archive tests passed for exact sidecars/tools and rejection of recordings, firmware, crash reports and changed binaries. These are offline results; no candidate installation or hardware test was performed.
+The candidate adds portable selection across USB locations, optional explicit location pinning, mapping reclamation without the old lifetime cap, a pinned-dependency build and an exact-manifest installer. A fresh local clone downloaded and hash-verified the dependency, built with the macOS 27.0 SDK and Apple clang 21.0.0, and passed all tests. Seven native contract groups passed with address/undefined-behavior sanitizers, including the actual USB profile validator, HAL callbacks and 10,000 concurrent mapping reconnects. Eighteen filesystem tests passed for installation, replacement, rollback, interrupted transactions, orphan journals, uninstall, symlink/path rejection and restrictive umasks. Four archive tests passed for exact sidecars/tools and rejection of recordings, firmware, crash reports and changed binaries. These offline results remain distinct from live hardware evidence. Following clearance of the unrelated panic incident, live hardware testing resumed on 2026-10-04; the connected original Mbox 2 remained visible to macOS throughout the attended day with no observed instability.
 
 Use `python3 tools/test.py --offline` after the dependency archive has been fetched. The tool writes `build/test-results.json` and runs native contracts under AddressSanitizer/UndefinedBehaviorSanitizer plus installer filesystem tests and CLI rejection guards. It opens no USB device and performs no system installation or launchd action. Record the candidate commit/archive hash, SDK/compiler, test report and complete result when accepting an offline build. Do not substitute a test count or compilation success for hardware acceptance.
 
@@ -38,22 +38,24 @@ Use `python3 tools/test.py --offline` after the dependency archive has been fetc
 
 | Gate | Required acceptance | Current status |
 | --- | --- | --- |
-| Latest panic | Investigate launchd failure; establish a bounded, recoverable path for resumed testing | Open; hardware hold |
-| Clean source build | Fresh-directory build, pinned archive verification, complete tests, curated source scan | Passed in a fresh local clone; 7 native groups and 22 Python tests; no hardware proof |
+| Latest panic | Establish whether the 2026-10-03 launchd failure was related to Necromancer Audio | Cleared; traced to an unrelated legacy Prism ancestor process; hardware testing resumed |
+| Clean source build | Fresh-directory build, pinned archive verification, complete tests, curated source scan | Passed in a fresh local clone; 7 native groups and 22 Python tests; live connected-device evidence now also exists |
 | Managed installation | Fresh install, replacement, removal, injected failure and interrupted-transaction recovery | 18 offline filesystem tests passed; live operations unqualified |
 | Existing prototype migration | Preserve known working payload and verified rollback before any replacement | Not performed |
 | Playback and input | New candidate heard at a quiet level; DI input 1 recorded/replayed with valid counters | Historical prototype only |
 | USB lifecycle | Unplug/reconnect idle and during streaming, different ports, service restart | Unqualified on candidate |
 | Power lifecycle | Sleep/wake and reboot, including service startup with device absent/present | Unqualified |
-| Long session | Defined-duration playback/recording under representative desktop/DAW load | Unqualified |
+| Long session | Defined-duration playback/recording under representative desktop/DAW load | Day-long connected/visible stability observed; sustained representative playback/recording remains unqualified |
 | Portability | Another Mac and another original Mbox 2 on firmware 1.43 | Unqualified |
 | Latency | Measured round-trip latency and stable useful buffer settings | Unqualified; conservative buffering |
 | Distribution | Curated archive review, licence notices, appropriate signatures/notarization and explicit publication approval | Private source/developer archives prepared; privacy/allowlist/signature checks passed; ad-hoc only, unnotarized, unpublished |
 
 Physical MIDI input/output can remain an explicit experimental limitation of an audio-focused alpha, but it must not be advertised as qualified. Input 2, phantom power and S/PDIF must remain unqualified until attended tests establish their behavior. Hardware-rate switching beyond 48 kHz is outside this alpha.
 
-## Future attended test record
+## Attended test record
 
-For each hardware session, record the candidate version/hash, hardware model, firmware, macOS/SDK, USB topology, test duration, expected behavior, measured counters and operator acceptance. Keep device serials, boot UUIDs, recordings and complete machine logs in private evidence. Export only the minimal redacted facts needed to support a compatibility claim.
+2026-10-04: the original Mbox 2 remained connected and visible to macOS throughout the attended day with no observed instability after the unrelated Prism-origin panic was cleared as a blocker.
 
-Start from registry-only enumeration and inspect the prepared install plan before a live change. Resume one bounded hardware step at a time once the incident hold is cleared, preserve recovery material, and stop on a new panic or unexplained service failure. Do not change firmware, SIP or boot security to bypass a qualification failure.
+For each further hardware session, record the candidate version/hash, hardware model, firmware, macOS/SDK, USB topology, test duration, expected behavior, measured counters and operator acceptance. Keep device serials, boot UUIDs, recordings and complete machine logs in private evidence. Export only the minimal redacted facts needed to support a compatibility claim.
+
+Start from registry-only enumeration and inspect the prepared install plan before a live change. Continue one bounded hardware step at a time, preserve recovery material, and stop on a new panic or unexplained service failure. Do not change firmware, SIP or boot security to bypass a qualification failure.
