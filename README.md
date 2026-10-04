@@ -2,7 +2,7 @@
 
 Experimental native macOS audio support for the original Digidesign/Avid Mbox 2 USB interface.
 
-**Status: private local preparation, `0.1.0-alpha.1`. Hardware qualification and publication are on hold following a system panic. This candidate has not been installed or tested on hardware.**
+**Status: private local preparation, `0.1.0-alpha.1`. Hardware testing has resumed. On 2026-10-04 the original Mbox 2 remained connected and visible to macOS throughout the day with no observed instability. The 2026-10-03 launchd panic was traced to an unrelated legacy Prism ancestor process rather than Necromancer Audio. External publication still awaits the remaining qualification gates below.**
 
 An earlier prototype produced audible CoreAudio playback and recorded a guitar through DI input 1. This repository prepares that work for a reproducible build and a carefully qualified alpha. Source tests, a successful build and historical listening results are separate forms of evidence; none clears the current hardware or release gates.
 
@@ -43,13 +43,13 @@ To prepare local source and developer archives after committing the reviewed sou
 python3 tools/release.py
 ```
 
-This checks a clean source tree, matching test fingerprint, payload hashes, signatures and private-material patterns, then writes archives and SHA-256 checksums to `dist/`. It has no upload or publication operation. The developer archive uses local ad-hoc signatures by default and remains subject to the hardware hold.
+This checks a clean source tree, matching test fingerprint, payload hashes, signatures and private-material patterns, then writes archives and SHA-256 checksums to `dist/`. It has no upload or publication operation. The developer archive uses local ad-hoc signatures by default and remains a pre-release artifact pending external-alpha qualification.
 
 ```sh
 python3 tools/install.py plan
 ```
 
-Planning is read-only. Installation is a separate administrator operation that loads the background service, initializes USB and restarts CoreAudio. The installer preserves an existing legacy/unmanaged installation by refusing to overwrite it. **Do not install the candidate while the hardware qualification hold is active.** See [installation and recovery](docs/INSTALL.md) for the prepared procedure and exact system paths.
+Planning is read-only. Installation is a separate administrator operation that loads the background service, initializes USB and restarts CoreAudio. The installer preserves an existing legacy/unmanaged installation by refusing to overwrite it. Hardware testing is active again, but external users should still treat this as an unqualified developer alpha until the remaining release gates are closed. See [installation and recovery](docs/INSTALL.md) for the prepared procedure and exact system paths.
 
 ## Experimental MIDI
 
@@ -63,7 +63,7 @@ After a future approved installation of that payload, `build/bin/mbox_midi_bridg
 
 ## What remains before an external alpha
 
-The release gates include investigation of the current launchd panic, live install/update/uninstall/recovery checks, unplug/reconnect and sleep/wake behavior, reboot, long sessions, and another Mac and Mbox unit. Round-trip latency has not been qualified; the current conservative buffers are unsuitable for claiming low-latency software monitoring. Input 2 signal acceptance, phantom power and S/PDIF remain unqualified.
+The prior launchd panic is no longer a Necromancer Audio blocker: it was traced to an unrelated legacy Prism ancestor process. Remaining release gates include live install/update/uninstall/recovery checks, unplug/reconnect and sleep/wake behavior, reboot, sustained representative audio sessions, and another Mac and Mbox unit. The current unit has remained connected and visible to macOS throughout an attended day without observed instability. Round-trip latency has not been qualified; the current conservative buffers are unsuitable for claiming low-latency software monitoring. Input 2 signal acceptance, phantom power and S/PDIF remain unqualified.
 
 See the [qualification record](docs/QUALIFICATION.md), [architecture](docs/ARCHITECTURE.md), [contribution workflow](CONTRIBUTING.md) and [third-party notices](THIRD_PARTY_NOTICES.md). Downloadable distribution, signing/notarization and publication are separate release steps that have not been performed.
 
