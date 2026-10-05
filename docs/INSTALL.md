@@ -83,7 +83,7 @@ To select a different prepared payload, pass `--source` pointing at its release 
 
 ## Uninstall
 
-For an intact managed installation, after the hardware hold is cleared:
+For an intact managed installation:
 
 ```sh
 sudo python3 tools/install.py uninstall
@@ -95,7 +95,7 @@ The alpha installer does not install a MIDI login agent. Stop any manually runni
 
 ## Recovery
 
-Before changing a managed payload, the installer writes a protected, flushed `pending-transaction.json` in its state directory. A pending journal blocks a new transaction. Once the hardware hold is cleared, recovery from the source repository is:
+Before changing a managed payload, the installer writes a protected, flushed `pending-transaction.json` in its state directory. A pending journal blocks a new transaction. Recovery from the source repository is:
 
 ```sh
 sudo python3 tools/install.py recover
@@ -107,7 +107,7 @@ From a prepared release directory, use:
 sudo python3 install.py recover
 ```
 
-Recovery validates the journal, recorded manifests, backup hashes and known installed files before changing them. It restores the previous managed payload and its recorded loaded-service state; an interrupted first installation returns to the previous absence of a managed payload. Recovery restarts CoreAudio and can start the prior USB service, so it is a system/hardware operation subject to the same hold as installation. It does not adopt a legacy installation or select arbitrary historical recovery copies.
+Recovery validates the journal, recorded manifests, backup hashes and known installed files before changing them. It restores the previous managed payload and its recorded loaded-service state; an interrupted first installation returns to the previous absence of a managed payload. Recovery restarts CoreAudio and can start the prior USB service, so review its plan and save audio work as for an installation. It does not adopt a legacy installation or select arbitrary historical recovery copies.
 
 Do not manually delete the pending journal or edit it to bypass validation. Filesystem tests emulate interrupted operations and exercise this command in temporary roots. Real reboot/power-loss recovery and live service acceptance remain unqualified.
 
