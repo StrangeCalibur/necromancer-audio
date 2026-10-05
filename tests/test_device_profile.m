@@ -4,7 +4,22 @@
 #include "mbox_native.m"
 #undef main
 #include <assert.h>
+static unsigned allocationCalls;
+@interface MboxMissingAllocator : NSObject @end
+@implementation MboxMissingAllocator @end
+@interface MboxAvailableAllocator : NSObject
+- (NSMutableData *)dataWithCapacity:(NSUInteger)capacity options:(NSUInteger)options error:(NSError **)error;
+@end
+@implementation MboxAvailableAllocator
+- (NSMutableData *)dataWithCapacity:(NSUInteger)capacity options:(NSUInteger)options error:(NSError **)error {
+    allocationCalls++;return nil;
+}
+@end
 int main(void){@autoreleasepool{
+    assert(!mbox_runtime_has_shared_allocator([MboxMissingAllocator class]));
+    assert(mbox_runtime_has_shared_allocator([MboxAvailableAllocator class]));
+    assert(allocationCalls==0); // The availability probe must not allocate/open hardware.
+
     NSMutableData *data=[NSMutableData dataWithLength:646];uint8_t *p=data.mutableBytes;
     const uint8_t prefix[]={
         9,2,0x86,2,7,1,0,0x80,50,

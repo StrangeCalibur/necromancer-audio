@@ -229,6 +229,11 @@ static int runDevice(const MboxOptions *options) {
     }
 }
 
+// Probe availability before creating IPC, capturing USB or initializing the device.
+static BOOL mbox_runtime_has_shared_allocator(Class host) {
+    return [host instancesRespondToSelector:@selector(dataWithCapacity:options:error:)];
+}
+
 int main(int argc,const char **argv){
     @autoreleasepool {
         MboxOptions options;
@@ -236,6 +241,9 @@ int main(int argc,const char **argv){
         if(options.mode==MBOX_VERSION_MODE){puts(MBOX_VERSION);return 0;}
         if(options.mode==MBOX_HELP){puts("Usage: mbox_service --list | --inspect [--location-id ID] | --serve-capture [--location-id ID] [--enable-midi]\n--list reads USB registry metadata only. --inspect reads descriptors without initialization.\n--serve-capture requires administrator privileges, captures the selected Mbox, initializes audio and streams continuously. Stopping resets/rematches it.\nSupports one original Mbox 2 with firmware 1.43; multiple matches require an explicit location ID. MIDI is experimental and disabled by default. No firmware writes.");return 0;}
         if(options.mode!=MBOX_SERVE)return runDevice(&options);
+        if(!mbox_runtime_has_shared_allocator([IOUSBHostObject class])){
+            fprintf(stderr,"This macOS runtime lacks the required IOUSBHost shared-buffer allocator. No device opened.\n");return 3;
+        }
         if(!startService()){checkpoint(@"service.start.failed",nil);return 1;}
         while(!gStop){@autoreleasepool{runDevice(&options);mbox_store(&gShared->online,0);}
             for(int i=0;i<30 && !gStop;i++)usleep(100000);
