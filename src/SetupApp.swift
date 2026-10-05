@@ -94,17 +94,21 @@ final class SetupApp: NSObject, NSApplicationDelegate {
     @objc func refreshStatus() {
         busy(true)
         queue.async {
+            let (packageCode, packageText) = self.run("verify-package")
             let (code, text) = self.run("status")
             let current = self.json(text)
             let (planCode, planText) = self.run("plan")
             DispatchQueue.main.async {
                 self.installed = current["installed"] as? Bool == true
                 self.pending = current["needs_recovery"] as? Bool == true
-                self.ready = planCode == 0
+                self.ready = packageCode == 0 && planCode == 0
                 self.diagnostic = "Necromancer Audio Setup\n" + (Bundle.main.object(forInfoDictionaryKey: "NecromancerPrereleaseVersion") as? String ?? "") +
-                    "\nInstallation status:\n" + text + "\nInstallation plan:\n" + planText +
+                    "\nPackage verification:\n" + packageText + "\nInstallation status:\n" + text + "\nInstallation plan:\n" + planText +
                     "\nHardware audio acceptance: unverified by this setup app.\n"
-                if self.pending {
+                if packageCode != 0 {
+                    self.status.stringValue = "This package did not pass verification"
+                    self.detail.stringValue = self.json(packageText)["error"] as? String ?? "Copy Diagnostics for details."
+                } else if self.pending {
                     self.status.stringValue = "An interrupted installation needs recovery"
                     self.detail.stringValue = "Recover restores the previous managed driver state. Save audio work before continuing."
                 } else if code != 0 {

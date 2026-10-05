@@ -261,6 +261,14 @@ final class Installer {
             try command("/usr/bin/codesign", ["--verify", "--strict", "-R=" + rule, item.path])
         }
     }
+    func verifyPackage() throws -> Manifest {
+        let new = try readManifest(source.appendingPathComponent("manifest.json"))
+        try require(!new.midi_enabled, "This setup app supports the audio-only package.")
+        try verify(source.appendingPathComponent("payload"), new, exact: true)
+        try verifyDaemon(source.appendingPathComponent("payload"), new)
+        try trustedPackage(source.appendingPathComponent("payload"), new)
+        return new
+    }
     func preflight(install: Bool) throws -> (Manifest?, Manifest?) {
         for name in targets + [receipt, logs] { try protected(path(name)) }
         for leaf in ["mbox2.log", "mbox2.err.log"] {
@@ -269,11 +277,7 @@ final class Installer {
         }
         let old = try installed()
         if !install { try require(old != nil, "No managed driver is installed."); return (old, nil) }
-        let new = try readManifest(source.appendingPathComponent("manifest.json"))
-        try require(!new.midi_enabled, "This setup app supports the audio-only package.")
-        try verify(source.appendingPathComponent("payload"), new, exact: true)
-        try verifyDaemon(source.appendingPathComponent("payload"), new)
-        try trustedPackage(source.appendingPathComponent("payload"), new)
+        let new = try verifyPackage()
         return (old, new)
     }
     func guardMutation() throws {
@@ -431,7 +435,7 @@ final class Installer {
 
 let args = Array(CommandLine.arguments.dropFirst())
 do {
-    guard let action = args.first, ["plan", "status", "install", "uninstall", "recover"].contains(action) else { throw SetupError("Choose plan, status, install, uninstall or recover.") }
+    guard let action = args.first, ["verify-package", "plan", "status", "install", "uninstall", "recover"].contains(action) else { throw SetupError("Choose verify-package, plan, status, install, uninstall or recover.") }
     let helper = URL(fileURLWithPath: CommandLine.arguments[0])
     var source = helper.deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Resources/Release")
     var root = URL(fileURLWithPath: "/")
@@ -455,6 +459,9 @@ do {
     let installer = Installer(root: root, source: source); installer.testFailure = failure
     let result: [String: Any]
     switch action {
+    case "verify-package":
+        let package = try installer.verifyPackage()
+        result = ["package_verified": true, "version": package.version, "signing": package.signing, "installation_performed": false]
     case "status":
         let pending = try exists(installer.path(journal)) || exists(installer.path(journal + ".next"))
         if pending { result = ["installed": false, "needs_recovery": true] }

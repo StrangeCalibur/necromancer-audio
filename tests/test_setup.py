@@ -63,6 +63,13 @@ class NativeSetupTests(unittest.TestCase):
         self.assertFalse(plan["firmware_write"])
         self.assertEqual(list(self.system.iterdir()), [])
 
+    def test_package_verification_does_not_adopt_prototype(self):
+        path = self.system / install.SERVICE
+        path.parent.mkdir(parents=True); path.write_bytes(b"prototype")
+        before = self.snapshot()
+        self.assertTrue(json.loads(self.run_helper("verify-package").stdout)["package_verified"])
+        self.assertEqual(before, self.snapshot())
+
     def test_fresh_install_update_uninstall(self):
         self.run_helper("install")
         self.assertTrue(json.loads(self.run_helper("status").stdout)["installed"])
