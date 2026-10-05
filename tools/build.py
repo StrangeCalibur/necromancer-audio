@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the private alpha with Apple tools and a hash-pinned source dependency.
+"""Build the experimental alpha with Apple tools and a hash-pinned source dependency.
 
 No device access, installation, credential discovery, uploads or publication.
 """

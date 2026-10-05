@@ -17,3 +17,7 @@ __pycache__/
 *.p12
 *.p8
 *.mobileprovision
+
+# Local maintainer coordination; not required by public contributors.
+.continuum/
+CONTINUUM_AGENT_INSTRUCTIONS.md

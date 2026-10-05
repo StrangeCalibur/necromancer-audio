@@ -1,0 +1,42 @@
+name: Offline macOS contracts
+
+on:
+  push:
+    branches: [main, 'codex/**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: contracts-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline:
+    runs-on: macos-26
+    timeout-minutes: 25
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Build pinned dependency and default audio payload
+        run: python3 tools/build.py --jobs 3
+      - name: Run offline native and filesystem contracts
+        run: python3 tools/test.py --offline --jobs 3
+      - name: Verify curated archive preparation
+        run: python3 tools/release.py
+      - name: Preserve verification report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: offline-verification
+          path: |
+            build/test-results.json
+            dist/release-readiness.json
+            dist/SHA256SUMS
+          if-no-files-found: ignore
+          retention-days: 14

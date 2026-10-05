@@ -1,6 +1,6 @@
 # Installation, replacement and recovery
 
-**Private preparation only. The candidate has not been installed on hardware, and the current hardware qualification hold remains active.** The commands below describe the prepared installer workflow; they are not a report that these operations have been performed.
+**Experimental developer alpha.** The packaged candidate has passed offline tests; live installer/lifecycle acceptance remains unqualified. Review the plan and recovery procedure before choosing to install. These commands describe the workflow, not a claim that live operations were qualified.
 
 ## Requirements and payload
 
@@ -36,7 +36,7 @@ The first build fetches the pinned public dependency if it is absent. The test c
 
 `plan` validates the source and current managed installation without changing launchd, opening USB or installing files. `status` checks the managed receipt and files. A pre-existing prototype without this receipt is intentionally reported as unmanaged; its files are preserved.
 
-For a prepared release directory, run its `install.py` directly. That script defaults to the accompanying manifest and payload:
+For an extracted developer archive, change into its directory and run `python3 install.py plan`, then `sudo python3 install.py install --allow-ad-hoc` after reviewing the plan. That script defaults to the accompanying manifest and payload. From a local build, the equivalent plan is:
 
 ```sh
 python3 build/release/install.py plan
@@ -44,7 +44,7 @@ python3 build/release/install.py plan
 
 ## Fresh developer installation
 
-These steps become usable only after the current hardware hold is cleared. Save audio work and close active audio clients before applying an install or removal because CoreAudio restarts.
+Save audio work and close active audio clients before applying an install or removal because CoreAudio restarts.
 
 Local builds use ad-hoc signatures by default. The installer requires an explicit acknowledgement for such a developer payload:
 
@@ -79,7 +79,7 @@ To select a different prepared payload, pass `--source` pointing at its release 
 
 ## Existing prototype or other unmanaged installation
 
-`--replace` does not adopt or delete legacy files. If the installer reports an unmanaged installation, stop and preserve it. Inspect its existing installer, receipt/manifest, service configuration and recovery copies before preparing a separate migration procedure. Do not remove files merely because their names match this project's targets. Migration of the current working prototype has not been performed during private preparation.
+`--replace` does not adopt or delete legacy files. If the installer reports an unmanaged installation, stop and preserve it. Inspect its existing installer, receipt/manifest, service configuration and recovery copies before preparing a separate migration procedure. Do not remove files merely because their names match this project's targets. Migration of the historical prototype has not been qualified for this alpha.
 
 ## Uninstall
 

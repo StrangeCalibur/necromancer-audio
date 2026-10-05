@@ -1,16 +1,15 @@
 # Changelog
 
-## 0.1.0-alpha.1 — private preparation
+## 0.1.0-alpha.1 — 2026-10-05
 
-This candidate is prepared locally and has not been installed on hardware or cleared for publication.
+First open source developer alpha for the original Digidesign/Avid Mbox 2 USB on Apple silicon and macOS 26.4+.
 
-- Extracted the native Mbox 2 audio transport and CoreAudio HAL into a standalone source tree.
-- Restricted support to the original `0x0dba:0x3000` runtime profile with existing firmware 1.43, arm64 macOS 26.4+ and 48 kHz stereo duplex audio.
-- Replaced the prototype's fixed USB port selection with exact-profile discovery and optional explicit location pinning; ambiguous matches are rejected.
-- Replaced the HAL's eight-mapping lifetime cap with reclamation after concurrent readers leave.
-- Added a hash-pinned libASPL build, explicit SDK/deployment requirements, local signing and exact payload manifest.
-- Prepared managed installation/replacement/removal with preservation of legacy installations, recovery material, a durable pending-transaction journal, an explicit recovery command and offline filesystem tests.
-- Kept MIDI opt-in and its user bridge foreground-only; physical DIN qualification remains open.
-- Added curated architecture, installation, provenance and qualification documentation without private recordings, raw machine logs or proprietary firmware.
+- Added a standalone IOUSBHost transport and CoreAudio HAL plug-in for firmware 1.43, stereo input/output and fixed 48 kHz.
+- Added strict descriptor validation, portable single-device selection and optional USB location pinning.
+- Added bounded shared-memory audio IPC and concurrent mapping retirement.
+- Kept experimental MIDI opt-in; physical DIN acceptance remains unqualified.
+- Added a hash-pinned libASPL build, explicit SDK/deployment requirements, local signing and an exact payload manifest.
+- Added managed install/update/removal, refusal to overwrite unmanaged installations, retained recovery copies and a durable interrupted-transaction recovery journal.
+- Added sanitizer-backed native contracts, installer/archive tests, macOS CI, contribution guidance and curated source/developer archives with checksums.
 
-Hardware qualification is on hold following the latest launchd assertion panic. Historical prototype playback/input results are retained as evidence with their limits; they do not qualify this candidate.
+The unrelated system-crash hold has been cleared. Historical prototype playback and DI-1 guitar recording were verified; the packaged candidate's live installation, lifecycle, sustained-load, portability and latency acceptance remain open. Developer binaries are ad-hoc signed and unnotarized. No firmware or proprietary driver is included.

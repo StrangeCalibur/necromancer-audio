@@ -1,12 +1,12 @@
-# Qualification and release gates
+# Qualification record
 
-**As of 2026-10-03: private local alpha preparation. Hardware work is on hold after a system panic. This new `0.1.0-alpha.1` candidate has not been installed or qualified on hardware.**
+**2026-10-05: the unrelated system-crash hold is cleared. `0.1.0-alpha.1` is an experimental open source developer alpha.** The owner confirmed that the kernel crashes were unrelated to this driver and resolved. They are not treated as a current release blocker.
 
-Keep source/build proof, offline contract tests, live transport evidence and human listening/input acceptance separate. Historical prototype results do not prove a modified candidate is safe or ready to distribute.
+Source/build proof, offline tests, prototype transport evidence and packaged-candidate hardware acceptance are separate. Publication enables development and wider testing; it does not certify the candidate for production audio.
 
 ## Historical prototype evidence
 
-These checks preceded the standalone candidate:
+These checks preceded the standalone packaged candidate:
 
 | Check | Evidence and limit |
 | --- | --- |
@@ -14,46 +14,42 @@ These checks preceded the standalone candidate:
 | Physical input | Guitar DI input 1 was recorded and replayed. Input 2 signal acceptance was not established. |
 | Duplex transport | A simultaneous 60-second silent input/output test completed with matching frames and no reported application discontinuities or USB packet errors during that bounded test. |
 | MIDI software path | A bounded software loopback passed; this did not test the Mbox sockets. |
-| MIDI native output | 76 MIDI messages produced 704 expected MIDIMAN USB bytes with successful native completions and no reported drops/errors during the test. No physical DIN return signal was observed. |
-| Extended stability | An earlier service missed an isochronous deadline during a longer run and recovered. Long-run stability is not qualified. |
+| MIDI native output | 76 messages produced 704 expected MIDIMAN USB bytes with successful native completions and no reported drops/errors. No physical DIN return signal was observed. |
+| Extended stability | An earlier service missed an isochronous deadline during a longer run and recovered. Long-run stability remains unqualified. |
+| Attended use, 2026-10-04 | The project record reports the original Mbox 2 stayed connected, visible and working without observed instability throughout the day. This is prototype evidence, not a controlled sustained-load or packaged-candidate test. |
 
-These results support continued development, not a compatibility claim for another Mac, USB topology, Mbox unit or firmware revision.
+These observations concern one setup and do not establish compatibility with another Mac, USB topology, unit or firmware revision. Historical mixed native/libusb experiments remain excluded; the candidate uses one IOUSBHost owner.
 
-## System crash gates
+## Source and offline proof
 
-Two distinct crashes are relevant to release qualification:
+The release is built from a fresh checkout without private maintainer onboarding or credentials. The dependency archive is pinned and SHA-256 verified. The current local toolchain is Apple clang 21.0.0 with macOS SDK 27.0, targeting macOS 26.4 and arm64.
 
-- A historical IOUSBHost kernel panic occurred while an earlier experiment mixed native initialization and libusb ownership. That experimental path is quarantined and excluded from this candidate. It must not be restored as a fallback.
-- At 19:45:44 UTC on 2026-10-03, the running system panicked after `launchd` exited on an assertion. Inspection of the matching local binary located the assertion in job-monitor handling after a Mach `KERN_NO_SPACE` result. The responsible job and causal relationship to the background Mbox prototype remain unknown. The report does not establish that USB or this candidate caused it.
+Seven native contract groups exercise PCM/feedback, CLI/device selection, MIDI codec, concurrent mapping reclamation, actual HAL callbacks/timestamps/input ring, mock async MIDI transport and USB descriptor-profile rejection. Native tests run with AddressSanitizer and UndefinedBehaviorSanitizer, including 10,000 mapping reconnects. The 24 Python tests cover 18 installer filesystem scenarios and six archive/source-curation scenarios. CLI guards reject unsupported actions before device access.
 
-The device was disconnected following the latest crash. Hardware streaming, service changes and candidate installation remain on hold while the incident is investigated. A release must document the investigation outcome and evidence supporting any resumed hardware test. Raw panic reports, machine identifiers, local logs and private recordings are excluded from curated release documents and archives.
+`python3 tools/test.py --offline` writes `build/test-results.json`; its source fingerprint must match the prepared manifest before packaging. Tests use temporary filesystem roots and mocked service operations. They neither open USB nor change system services. The developer archive includes this report; `SHA256SUMS` identifies the released archives. GitHub CI independently runs the build/tests and archive preparation on macOS arm64.
 
-## Candidate source and offline checks
+## Acceptance boundaries
 
-The candidate adds portable selection across USB locations, optional explicit location pinning, mapping reclamation without the old lifetime cap, a pinned-dependency build and an exact-manifest installer. A fresh local clone downloaded and hash-verified the dependency, built with the macOS 27.0 SDK and Apple clang 21.0.0, and passed all tests. Seven native contract groups passed with address/undefined-behavior sanitizers, including the actual USB profile validator, HAL callbacks and 10,000 concurrent mapping reconnects. Eighteen filesystem tests passed for installation, replacement, rollback, interrupted transactions, orphan journals, uninstall, symlink/path rejection and restrictive umasks. Four archive tests passed for exact sidecars/tools and rejection of recordings, firmware, crash reports and changed binaries. These are offline results; no candidate installation or hardware test was performed.
+| Area | Current status |
+| --- | --- |
+| System-crash hold | Cleared by owner; unrelated crashes resolved |
+| Source/build | Fresh-checkout build, pinned dependency and offline contracts required before promotion |
+| Managed installation | Offline install/update/rollback/interruption/uninstall tests; live operations unqualified |
+| Existing prototype migration | No automatic adoption; unmanaged files preserved; migration unqualified |
+| Candidate playback/input | Historical prototype listening/DI-1 evidence only; packaged candidate unqualified |
+| USB lifecycle | Candidate unplug/reconnect, ports and service restart unqualified |
+| Power lifecycle | Candidate sleep/wake and reboot unqualified |
+| Sustained load | Representative desktop/DAW playback/recording duration unqualified |
+| Portability | Second Mac and second original Mbox 2 unqualified |
+| Latency | Round-trip latency unmeasured; conservative buffering; no low-latency claim |
+| Input 2 / phantom power / S/PDIF | Unqualified |
+| Physical MIDI DIN input/output | Unqualified; opt-in experimental software transport only |
+| Distribution | MIT source and curated developer archive; ad-hoc signatures; unnotarized |
 
-Use `python3 tools/test.py --offline` after the dependency archive has been fetched. The tool writes `build/test-results.json` and runs native contracts under AddressSanitizer/UndefinedBehaviorSanitizer plus installer filesystem tests and CLI rejection guards. It opens no USB device and performs no system installation or launchd action. Record the candidate commit/archive hash, SDK/compiler, test report and complete result when accepting an offline build. Do not substitute a test count or compilation success for hardware acceptance.
+Hardware-rate switching beyond 48 kHz and other Mbox variants/firmware revisions are outside this alpha. Production readiness requires the live acceptance work above; these limitations remain visible in the public alpha.
 
-## Gates before an external audio alpha
+## Attended test records
 
-| Gate | Required acceptance | Current status |
-| --- | --- | --- |
-| Latest panic | Investigate launchd failure; establish a bounded, recoverable path for resumed testing | Open; hardware hold |
-| Clean source build | Fresh-directory build, pinned archive verification, complete tests, curated source scan | Passed in a fresh local clone; 7 native groups and 22 Python tests; no hardware proof |
-| Managed installation | Fresh install, replacement, removal, injected failure and interrupted-transaction recovery | 18 offline filesystem tests passed; live operations unqualified |
-| Existing prototype migration | Preserve known working payload and verified rollback before any replacement | Not performed |
-| Playback and input | New candidate heard at a quiet level; DI input 1 recorded/replayed with valid counters | Historical prototype only |
-| USB lifecycle | Unplug/reconnect idle and during streaming, different ports, service restart | Unqualified on candidate |
-| Power lifecycle | Sleep/wake and reboot, including service startup with device absent/present | Unqualified |
-| Long session | Defined-duration playback/recording under representative desktop/DAW load | Unqualified |
-| Portability | Another Mac and another original Mbox 2 on firmware 1.43 | Unqualified |
-| Latency | Measured round-trip latency and stable useful buffer settings | Unqualified; conservative buffering |
-| Distribution | Curated archive review, licence notices, appropriate signatures/notarization and explicit publication approval | Private source/developer archives prepared; privacy/allowlist/signature checks passed; ad-hoc only, unnotarized, unpublished |
+Record candidate version/hash, model, firmware, macOS/SDK, USB topology, duration, expected behavior, measured counters and operator listening/input acceptance. Keep serials, boot identifiers, recordings and complete machine logs private; publish only redacted facts needed to support the result.
 
-Physical MIDI input/output can remain an explicit experimental limitation of an audio-focused alpha, but it must not be advertised as qualified. Input 2, phantom power and S/PDIF must remain unqualified until attended tests establish their behavior. Hardware-rate switching beyond 48 kHz is outside this alpha.
-
-## Future attended test record
-
-For each hardware session, record the candidate version/hash, hardware model, firmware, macOS/SDK, USB topology, test duration, expected behavior, measured counters and operator acceptance. Keep device serials, boot UUIDs, recordings and complete machine logs in private evidence. Export only the minimal redacted facts needed to support a compatibility claim.
-
-Start from registry-only enumeration and inspect the prepared install plan before a live change. Resume one bounded hardware step at a time once the incident hold is cleared, preserve recovery material, and stop on a new panic or unexplained service failure. Do not change firmware, SIP or boot security to bypass a qualification failure.
+Start with registry-only enumeration and the read-only install plan, preserve recovery material, and test one bounded operation at a time. Stop on a new panic or unexplained service failure. Do not change firmware, SIP or boot security to bypass a qualification failure.

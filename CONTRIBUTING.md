@@ -1,35 +1,36 @@
 # Contributing
 
-The project is in private local preparation. Keep repository remotes, uploads, publication and notarization outside routine development until explicitly authorized. The current hardware qualification hold permits source work and offline checks; it does not permit installing the candidate, starting USB streaming or changing system services.
+Issues and pull requests are welcome. This alpha targets the original Mbox 2 USB on Apple silicon, firmware 1.43 and fixed 48 kHz audio. Read the [qualification record](docs/QUALIFICATION.md) before making compatibility claims.
 
-## Development baseline
+## Build and tests
 
-Use Apple silicon, Python 3.10+ and Apple command-line tools with a macOS 26.4+ SDK. Python tooling uses the standard library. Build and test from the repository root:
+Use Python 3.10+, Apple silicon and Apple command-line tools with a macOS 26.4+ SDK:
 
 ```sh
 python3 tools/build.py
 python3 tools/test.py --offline
 ```
 
-The first build downloads only the dependency recorded in `dependencies.json` and verifies its SHA-256. Keep dependency commits, hashes and required notices together when changing a dependency. Do not vendor unrelated research trees, proprietary firmware or legacy driver binaries into the source tree.
+The first build fetches the pinned public dependency. Subsequent builds can use `--offline`. Tests rebuild the default ad-hoc signed audio-only payload, run seven native contract groups with address/undefined-behavior sanitizers, and test installer/release filesystem contracts. They neither access hardware nor change system services. Rebuild after testing if using different signing, location or MIDI options.
 
-Tests rebuild the default audio-only ad-hoc payload. Rebuild with intended release options after testing. Native contract tests use sanitizers; filesystem installer tests use temporary roots and mock service actions. Add meaningful failure/lifetime tests when changing protocol parsing, asynchronous USB buffers, mapping publication, installer recovery or IPC authorization.
+Add meaningful failure/lifetime tests for changes to protocol parsing, async USB buffers, mapping publication, installer recovery or IPC authorization. Keep patches focused and explain the behavior change and verification in the pull request.
 
-## Implementation constraints
+## Engineering constraints
 
-- Preserve exclusive native IOUSBHost ownership. Do not reintroduce a native/libusb handoff or legacy experimental fallback.
-- Keep USB calls, XPC, allocation and mapping cleanup outside project audio callbacks.
-- Keep async buffers and transaction storage alive until completion or abort; do not resize optimized IOUSBHost buffers.
-- Keep device profiles explicit. Do not claim support for another Mbox variant, firmware, architecture or rate based on similar names or descriptors.
-- Keep IPC operations fixed, authenticated and bounded. Do not introduce arbitrary paths, command execution or firmware controls.
-- Preserve existing installations and recovery material. A migration must identify and verify the actual legacy payload before replacement.
+- Keep a single IOUSBHost owner; never mix native initialization with libusb capture.
+- Reject unsupported descriptor/firmware profiles and ambiguous device selection.
+- Retain asynchronous USB buffers until callbacks complete; retire shared mappings only after readers leave.
+- Avoid allocation, blocking locks and file I/O in CoreAudio real-time callbacks.
+- Keep service IPC narrow and restrict privileged operations to intended principals.
+- Preserve unmanaged installations and verified rollback material.
+- Pin dependencies by commit/hash and retain their licences.
 
-## Evidence and documentation
+## Hardware reports
 
-Describe changes in terms of resulting behavior, relevant tests and remaining acceptance gates. Record offline tests separately from live service behavior, audible playback and physical input. Update `docs/QUALIFICATION.md` when a gate is genuinely verified, keeping historical failures and their resolution visible.
+Report version/commit, exact Mbox model and firmware, macOS, USB topology, duration, expected/actual behavior, transport counters and what you heard or recorded. Use the issue template. Redact personal paths, serials, boot identifiers and credentials; avoid posting raw machine logs or recordings with private material. Do not attach proprietary firmware or vendor driver packages.
 
-Reports intended for a curated release should include only the minimal reproducible facts: version/hash, platform, firmware, topology category, bounded duration and observed result. Exclude credentials, home paths, identifying UUIDs, raw system logs and recordings. Preserve required copyright/licence notices.
+Install/update/uninstall and service startup are explicit operations described in [INSTALL.md](docs/INSTALL.md). A build, USB completion or visible device is not a listening or physical-input result. Record prototype and packaged-candidate evidence separately.
 
-## Installation and hardware tests
+## Licensing
 
-Installation, updates, uninstallation and service startup are explicit system/hardware operations. The prepared procedure is in `docs/INSTALL.md`; current qualification status takes precedence over sample commands. No candidate is approved for hardware use or publication while the incident hold remains active.
+Submit original code that you can contribute under the project's MIT licence. Identify any third-party code and its licence before inclusion, and update THIRD_PARTY_NOTICES.md when appropriate. Protocol facts and a reference citation do not authorize copying an implementation under an incompatible licence.

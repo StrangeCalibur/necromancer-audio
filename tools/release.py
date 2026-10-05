@@ -163,7 +163,7 @@ def main():
               "source_sha256": tests["source_sha256"], "native_contracts_passed": len(tests["native_contracts"]),
               "python_tests_passed": tests["python_tests_passed"],
               "signing": manifest["signing"], "notarized": False, "published": False,
-              "hardware_candidate_installed": False, "hardware_qualification": "on hold after launchd panic"}
+              "hardware_candidate_installed": False, "hardware_qualification": "experimental; packaged candidate hardware acceptance unqualified"}
     (destination / "release-readiness.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
 
