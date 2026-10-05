@@ -26,7 +26,7 @@ The release is built from a fresh checkout without private maintainer onboarding
 
 Seven native contract groups exercise PCM/feedback, CLI/device selection, MIDI codec, concurrent mapping reclamation, actual HAL callbacks/timestamps/input ring, mock async MIDI transport and USB descriptor-profile rejection. Native tests run with AddressSanitizer and UndefinedBehaviorSanitizer, including 10,000 mapping reconnects. The 24 Python tests cover 18 installer filesystem scenarios and six archive/source-curation scenarios. CLI guards reject unsupported actions before device access.
 
-`python3 tools/test.py --offline` writes `build/test-results.json`; its source fingerprint must match the prepared manifest before packaging. Tests use temporary filesystem roots and mocked service operations. They neither open USB nor change system services. The developer archive includes this report; `SHA256SUMS` identifies the released archives. GitHub CI independently runs the build/tests and archive preparation on macOS arm64.
+`python3 tools/test.py --offline` writes `build/test-results.json`; its source fingerprint must match the prepared manifest before packaging. Tests use temporary filesystem roots and mocked service operations. They neither open USB nor change system services. The developer archive includes this report; `SHA256SUMS` identifies the released archives. GitHub CI runs the build/tests and archive preparation on the arm64 Xcode 27 preview image. SDK 26.6 failed to compile because it lacks the shared transaction-buffer declarations; the build now requires SDK 27.0+. The runtime deployment floor remains 26.4, matching Apple's API availability declaration, but runtime compatibility on macOS 26.4–26.x has not been tested.
 
 ## Acceptance boundaries
 

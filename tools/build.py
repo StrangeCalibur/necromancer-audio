@@ -94,8 +94,8 @@ def toolchain():
     if platform.system() != "Darwin" or platform.machine() != "arm64":
         raise RuntimeError("This alpha build targets an Apple-silicon Mac (arm64).")
     sdk = run(["xcrun", "--show-sdk-version"], capture_output=True, text=True).stdout.strip()
-    if tuple(int(x) for x in sdk.split(".")[:2]) < (26, 4):
-        raise RuntimeError("A macOS 26.4 or newer SDK is required by IOUSBHost shared transaction buffers.")
+    if tuple(int(x) for x in sdk.split(".")[:2]) < (27, 0):
+        raise RuntimeError("A macOS 27.0 or newer SDK is required: older SDKs omit the IOUSBHost shared transaction-buffer declarations.")
     compiler = run(["xcrun", "clang", "--version"], capture_output=True, text=True).stdout.splitlines()[0]
     return {"sdk": sdk, "compiler": compiler, "architecture": "arm64", "minimum_macos": MIN_MACOS}
 

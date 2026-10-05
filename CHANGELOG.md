@@ -10,6 +10,7 @@ First open source developer alpha for the original Digidesign/Avid Mbox 2 USB on
 - Kept experimental MIDI opt-in; physical DIN acceptance remains unqualified.
 - Added a hash-pinned libASPL build, explicit SDK/deployment requirements, local signing and an exact payload manifest.
 - Added managed install/update/removal, refusal to overwrite unmanaged installations, retained recovery copies and a durable interrupted-transaction recovery journal.
+- Required SDK 27.0+ after CI exposed missing shared-buffer declarations in SDK 26.6; runtime deployment floor remains 26.4 and older-runtime acceptance is unqualified.
 - Added sanitizer-backed native contracts, installer/archive tests, macOS CI, contribution guidance and curated source/developer archives with checksums.
 
 The unrelated system-crash hold has been cleared. Historical prototype playback and DI-1 guitar recording were verified; the packaged candidate's live installation, lifecycle, sustained-load, portability and latency acceptance remain open. Developer binaries are ad-hoc signed and unnotarized. No firmware or proprietary driver is included.

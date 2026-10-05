@@ -4,7 +4,7 @@
 
 ## Requirements and payload
 
-Use an Apple-silicon Mac on macOS 26.4+ and Python 3.10+. Building additionally requires Apple command-line tools with a macOS 26.4+ SDK. The current profile selects one original Mbox 2 with existing firmware 1.43. Multiple matching devices require an explicit USB registry location pin; other revisions and variants are rejected.
+Use an Apple-silicon Mac on macOS 26.4+ and Python 3.10+. Building additionally requires Apple command-line tools with a macOS 27.0+ SDK. The current profile selects one original Mbox 2 with existing firmware 1.43. Multiple matching devices require an explicit USB registry location pin; other revisions and variants are rejected.
 
 `python3 tools/build.py` prepares `build/release/manifest.json` and its exact `payload/`. The manifest records hashes, modes, platform, version and signing mode. The installer checks that payload against the fixed set of supported target files and rejects symlinks, unexpected files and unmanaged installations.
 

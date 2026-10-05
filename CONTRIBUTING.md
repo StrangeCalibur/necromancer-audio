@@ -4,7 +4,7 @@ Issues and pull requests are welcome. This alpha targets the original Mbox 2 USB
 
 ## Build and tests
 
-Use Python 3.10+, Apple silicon and Apple command-line tools with a macOS 26.4+ SDK:
+Use Python 3.10+, Apple silicon and Apple command-line tools with a macOS 27.0+ SDK:
 
 ```sh
 python3 tools/build.py

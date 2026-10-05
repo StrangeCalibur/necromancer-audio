@@ -4,7 +4,7 @@ This repository implements experimental support for the original Mbox 2 USB. Rea
 
 ## Build and verification
 
-Use Apple silicon, Python 3.10+ and an Apple macOS 26.4+ SDK. Run `python3 tools/build.py` and `python3 tools/test.py --offline`. Builds/tests must not gain USB access or system mutations as hidden side effects. Keep dependencies pinned and all licence notices intact.
+Use Apple silicon, Python 3.10+ and an Apple macOS 27.0+ SDK. Run `python3 tools/build.py` and `python3 tools/test.py --offline`. Builds/tests must not gain USB access or system mutations as hidden side effects. Keep dependencies pinned and all licence notices intact.
 
 ## Implementation constraints
 

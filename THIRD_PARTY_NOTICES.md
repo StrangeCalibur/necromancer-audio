@@ -35,7 +35,7 @@ Those sources are protocol research references. Their implementation is not copi
 
 ## Apple frameworks and tools
 
-The build uses the host's Apple SDK and system frameworks, including Foundation, CoreAudio, CoreMIDI, IOKit and IOUSBHost. They remain system dependencies; SDK/framework binaries are not bundled by this project.
+The build uses the host's Apple SDK and system frameworks, including Foundation, CoreAudio, CoreMIDI, IOKit and IOUSBHost. They remain system dependencies; SDK/framework binaries are not bundled by this project. The shared transaction-buffer method is [documented by Apple as available from macOS 26.4](https://developer.apple.com/documentation/iousbhost/iousbhostobject/data(withcapacity:options:)); SDK 27.0+ is required to compile this alpha because older tested SDKs omit its option declarations. The [GitHub runner-image catalog](https://github.com/actions/runner-images) identifies the arm64 Xcode 27 preview runner used by CI.
 
 ## Proprietary material
 
