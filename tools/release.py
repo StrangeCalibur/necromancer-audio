@@ -21,7 +21,7 @@ PROJECT_ONLY = {"CONTINUUM_AGENT_INSTRUCTIONS.md", ".continuum/.gitignore",
                 ".continuum/agent.onboarding.md", ".continuum/custom-instructions-snippet.md",
                 ".continuum/agent_enter.py", ".continuum/install_agent_instructions.py",
                 ".continuum/kanban.secret.env.example"}
-TEXT_SUFFIXES = {".m", ".mm", ".h", ".hpp", ".c", ".cpp", ".py", ".md", ".json", ".yml", ".yaml"}
+TEXT_SUFFIXES = {".m", ".mm", ".h", ".hpp", ".c", ".cpp", ".py", ".swift", ".md", ".json", ".yml", ".yaml"}
 DEVELOPER_TOOLS = {"mbox_midi_bridge", "audio_inventory", "mbox_coreaudio_test", "mbox_midi_test", "midi_inventory"}
 PRIVATE_PATTERNS = [
     re.compile(rb"/Users/[A-Za-z0-9_.-]+/"),

@@ -36,7 +36,7 @@ def source_fingerprint():
     checksum = hashlib.sha256()
     paths = [ROOT / "VERSION", ROOT / "dependencies.json"]
     for folder in ("src", "tests", "tools"):
-        paths += [p for p in (ROOT / folder).rglob("*") if p.is_file() and p.suffix in (".m", ".mm", ".h", ".hpp", ".c", ".cpp", ".py")]
+        paths += [p for p in (ROOT / folder).rglob("*") if p.is_file() and p.suffix in (".m", ".mm", ".h", ".hpp", ".c", ".cpp", ".py", ".swift")]
     for path in sorted(paths):
         checksum.update(path.relative_to(ROOT).as_posix().encode())
         checksum.update(b"\0")
@@ -160,6 +160,14 @@ def build_library(dep, jobs, env):
 
 
 def sign(path, identity):
+    # Strip only metadata codesign rejects, only on generated artifacts.
+    # Finder/cloud providers can attach it to builds under Documents.
+    artifact = Path(path)
+    if artifact.is_symlink() or (artifact.is_dir() and any(p.is_symlink() for p in artifact.rglob("*"))):
+        raise RuntimeError("Refusing to sign an artifact containing symlinks")
+    for attribute in ("com.apple.FinderInfo", "com.apple.ResourceFork"):
+        # xattr reports an absent attribute as an error; absence is expected.
+        subprocess.run(["/usr/bin/xattr", "-r", "-d", attribute, str(artifact)], capture_output=True, check=False)
     args = ["/usr/bin/codesign", "--force", "--sign", identity]
     if identity != "-":
         args += ["--options", "runtime", "--timestamp"]

@@ -6,13 +6,15 @@ Experimental open source macOS support for the original Digidesign/Avid **Mbox 2
 
 ## Supported profile
 
+The next source version, `0.1.0-alpha.2`, adds a [native setup app](docs/SETUP.md) as preparation for an audio-only public beta. It remains a qualification candidate until notarization and live acceptance pass. The setup app requires no Python or Xcode on the user's Mac.
+
 | Item | This alpha |
 | --- | --- |
 | Interface | Original Mbox 2 USB, VID `0x0dba`, PID `0x3000` |
 | Existing firmware | **1.43**; no firmware updater is included |
 | Mac | Apple silicon, arm64 |
 | System | macOS 26.4 or newer |
-| Build tools | Apple command-line tools with a macOS 27.0+ SDK (Xcode 27 preview); Python 3.10+ |
+| Build tools | Apple command-line tools with a macOS 27.0+ SDK; Python 3.10+ |
 | Audio | Fixed 48 kHz; stereo input/output; 24-bit USB PCM and Float32 CoreAudio |
 | MIDI | Opt-in experimental transport; physical DIN ports unqualified |
 

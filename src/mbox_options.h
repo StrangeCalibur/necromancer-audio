@@ -7,7 +7,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define MBOX_VERSION "0.1.0-alpha.1"
+#define MBOX_VERSION "0.1.0-alpha.2"
 #define MBOX_VENDOR 0x0dba
 #define MBOX_PRODUCT 0x3000
 #define MBOX_FIRMWARE 0x0143
