@@ -14,6 +14,8 @@ The default package supports original Mbox 2 firmware 1.43, stereo analog audio 
 
 ## Maintainer build
 
+The setup app's icon is generated with Apple's `sips` and `iconutil` tools from `assets/AppIcon.png`. The artwork participates in the source fingerprint and is included in the curated source archive; changing it requires fresh verification, signing and notarization. See `assets/README.md` for artwork provenance.
+
 Run the offline suite, then recreate the intended signed payload because the suite builds an ad-hoc payload:
 
 ```sh
@@ -37,6 +39,8 @@ python3 tools/setup.py --sign 'Developer ID Application: YOUR IDENTITY' --notari
 This opt-in operation uploads the signed app and its final DMG to Apple's notary service, requires Accepted results, and staples/validates each ticket. It does not publish to GitHub or install the driver. Verify the final download through Gatekeeper on a clean Mac. Apple documents this workflow at https://developer.apple.com/developer-id/.
 
 ## Acceptance before beta promotion
+
+Use a second Apple-silicon Mac with no previous Necromancer installation for clean-install acceptance. Its macOS version must be at least 26.4; record the exact version because runtime compatibility below the development system remains unqualified. First verify the downloaded app opens normally, then connect the original firmware-1.43 Mbox 2 for playback/input and reconnect tests. Save audio work before installation or removal. This does not replace managed-update and recovery testing.
 
 Record candidate version, source fingerprint, artifact hash and installed-file hashes. Establish:
 

@@ -62,6 +62,35 @@ class ArchiveTests(unittest.TestCase):
 
 
 class SourceCoordinationTests(unittest.TestCase):
+    def test_only_curated_png_is_allowed_in_source_archive(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "assets").mkdir()
+            icon = root / "assets/AppIcon.png"
+            icon.write_bytes(b"\x89PNG\r\n\x1a\n\xff\x00")
+            with mock.patch.object(release, "ROOT", root), mock.patch.object(release, "git", side_effect=[b"", b"assets/AppIcon.png\0"]):
+                self.assertEqual(release.source_files(), [("assets/AppIcon.png", icon.read_bytes(), 0o644)])
+            (root / "assets/private.png").write_bytes(icon.read_bytes())
+            with mock.patch.object(release, "ROOT", root), mock.patch.object(release, "git", side_effect=[b"", b"assets/private.png\0"]):
+                with self.assertRaisesRegex(RuntimeError, "Unexpected source type"):
+                    release.source_files()
+            icon.write_bytes(b"not an image")
+            with mock.patch.object(release, "ROOT", root), mock.patch.object(release, "git", side_effect=[b"", b"assets/AppIcon.png\0"]):
+                with self.assertRaisesRegex(RuntimeError, "Invalid source asset format"):
+                    release.source_files()
+
+    def test_icon_changes_invalidate_source_fingerprint(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ("VERSION", "dependencies.json", "assets/AppIcon.png"):
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b"original")
+            with mock.patch.object(release.build, "ROOT", root):
+                original = release.build.source_fingerprint()
+                (root / "assets/AppIcon.png").write_bytes(b"changed icon")
+                self.assertNotEqual(original, release.build.source_fingerprint())
+
     def test_project_coordination_is_omitted_and_agent_block_is_removed(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

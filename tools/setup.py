@@ -11,10 +11,27 @@ from pathlib import Path
 import plistlib
 import shutil
 import subprocess
+import tempfile
 import build
 import install
 
 APP_NAME = "Necromancer Audio Setup.app"
+
+
+def prepare_icon(app):
+    """Build all standard macOS icon representations from the curated master."""
+    source = build.ROOT / "assets/AppIcon.png"
+    with tempfile.TemporaryDirectory(prefix="app-icon-", dir=app.parent) as temporary:
+        iconset = Path(temporary) / "AppIcon.iconset"
+        iconset.mkdir()
+        for size in (16, 32, 128, 256, 512):
+            for scale in (1, 2):
+                suffix = "@2x" if scale == 2 else ""
+                target = iconset / f"icon_{size}x{size}{suffix}.png"
+                build.run(["/usr/bin/sips", "--resampleHeightWidth", size * scale, size * scale,
+                           source, "--out", target], capture_output=True)
+        build.run(["/usr/bin/iconutil", "--convert", "icns", "--output",
+                   app / "Contents/Resources/AppIcon.icns", iconset])
 
 
 def prepare(identity):
@@ -47,8 +64,10 @@ def prepare(identity):
     shutil.copy2(release / "manifest.json", destination / "manifest.json")
     for name in ("LICENSE", "THIRD_PARTY_NOTICES.md"):
         shutil.copy2(build.ROOT / name, contents / "Resources" / name)
+    prepare_icon(app)
     info = {"CFBundleIdentifier": "audio.necromancer.mbox2.setup", "CFBundleName": "Necromancer Audio Setup",
             "CFBundleExecutable": "NecromancerSetup", "CFBundlePackageType": "APPL",
+            "CFBundleIconFile": "AppIcon.icns",
             "CFBundleVersion": "0.1.0", "CFBundleShortVersionString": "0.1.0",
             "NecromancerPrereleaseVersion": manifest["version"], "LSMinimumSystemVersion": build.MIN_MACOS,
             "NSHighResolutionCapable": True, "CFBundleSupportedPlatforms": ["MacOSX"]}

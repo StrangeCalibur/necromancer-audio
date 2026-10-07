@@ -34,7 +34,7 @@ def digest(path):
 
 def source_fingerprint():
     checksum = hashlib.sha256()
-    paths = [ROOT / "VERSION", ROOT / "dependencies.json"]
+    paths = [ROOT / "VERSION", ROOT / "dependencies.json", ROOT / "assets/AppIcon.png"]
     for folder in ("src", "tests", "tools"):
         paths += [p for p in (ROOT / folder).rglob("*") if p.is_file() and p.suffix in (".m", ".mm", ".h", ".hpp", ".c", ".cpp", ".py", ".swift")]
     for path in sorted(paths):
