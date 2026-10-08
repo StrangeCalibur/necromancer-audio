@@ -13,7 +13,8 @@ import install
 import build
 
 ROOT = Path(__file__).resolve().parents[1]
-ALLOWED_ROOTS = {"src", "tests", "tools", "docs", ".github"}
+ALLOWED_ROOTS = {"src", "tests", "tools", "docs", ".github", "assets"}
+BINARY_SOURCE_FILES = {"assets/AppIcon.png": b"\x89PNG\r\n\x1a\n"}
 ALLOWED_TOP = {".gitignore", "AGENTS.md", "README.md", "LICENSE", "VERSION", "Makefile",
                "dependencies.json", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md", "CONTRIBUTING.md"}
 PROJECT_ONLY = {"CONTINUUM_AGENT_INSTRUCTIONS.md", ".continuum/.gitignore",
@@ -21,7 +22,7 @@ PROJECT_ONLY = {"CONTINUUM_AGENT_INSTRUCTIONS.md", ".continuum/.gitignore",
                 ".continuum/agent.onboarding.md", ".continuum/custom-instructions-snippet.md",
                 ".continuum/agent_enter.py", ".continuum/install_agent_instructions.py",
                 ".continuum/kanban.secret.env.example"}
-TEXT_SUFFIXES = {".m", ".mm", ".h", ".hpp", ".c", ".cpp", ".py", ".md", ".json", ".yml", ".yaml"}
+TEXT_SUFFIXES = {".m", ".mm", ".h", ".hpp", ".c", ".cpp", ".py", ".swift", ".md", ".json", ".yml", ".yaml"}
 DEVELOPER_TOOLS = {"mbox_midi_bridge", "audio_inventory", "mbox_coreaudio_test", "mbox_midi_test", "midi_inventory"}
 PRIVATE_PATTERNS = [
     re.compile(rb"/Users/[A-Za-z0-9_.-]+/"),
@@ -60,12 +61,16 @@ def source_files():
             continue
         if path.parts[0] not in ALLOWED_ROOTS and name not in ALLOWED_TOP:
             raise RuntimeError("Uncurated tracked path: " + name)
-        if name not in ALLOWED_TOP and path.suffix not in TEXT_SUFFIXES:
+        if name not in ALLOWED_TOP and name not in BINARY_SOURCE_FILES and path.suffix not in TEXT_SUFFIXES:
             raise RuntimeError("Unexpected source type: " + name)
         if full.is_symlink() or not full.is_file() or full.stat().st_size > 2 * 1024 * 1024:
             raise RuntimeError("Invalid source file: " + name)
         data = full.read_bytes()
-        data.decode("utf-8")
+        if name in BINARY_SOURCE_FILES:
+            if not data.startswith(BINARY_SOURCE_FILES[name]):
+                raise RuntimeError("Invalid source asset format: " + name)
+        else:
+            data.decode("utf-8")
         scan_bytes(data, name)
         if name == "AGENTS.md":
             data = re.sub(rb"<!-- continuum-agent-fast-path:start -->.*?<!-- continuum-agent-fast-path:end -->\s*",

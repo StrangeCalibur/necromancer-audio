@@ -50,6 +50,8 @@ Hardware-rate switching beyond 48 kHz and other Mbox variants/firmware revisions
 
 ## Attended test records
 
+The unreleased `0.1.0-alpha.2` source adds a native setup app as beta preparation. Compiled-helper filesystem tests cover planning, managed transactions, automatic failed-update restoration, process-interruption recovery, unknown-file refusal and preservation of unrelated plug-ins. These are temporary-root tests with mock service actions. Signed/notarized distribution and packaged-candidate hardware acceptance must each be established separately before beta promotion; the historical prototype remains a separate installation.
+
 Record candidate version/hash, model, firmware, macOS/SDK, USB topology, duration, expected behavior, measured counters and operator listening/input acceptance. Keep serials, boot identifiers, recordings and complete machine logs private; publish only redacted facts needed to support the result.
 
 Start with registry-only enumeration and the read-only install plan, preserve recovery material, and test one bounded operation at a time. Stop on a new panic or unexplained service failure. Do not change firmware, SIP or boot security to bypass a qualification failure.

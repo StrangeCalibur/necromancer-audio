@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.2 — unreleased beta preparation
+
+- Added the Necromancer Audio app icon, including Retina sizes and its source artwork in reproducible setup packaging.
+- Added a native macOS setup app with read-only status/plan, administrator authentication, managed installation/update, uninstall, interrupted-operation recovery and copyable diagnostics. Users need no Python or development tools.
+- Added a compiled Swift installer with fixed targets, signature and checksum validation, protected backups/journal and refusal to adopt unmanaged prototypes. Test-only roots and failure injection are absent from the shipping helper.
+- Added native setup filesystem tests and a signed DMG preparation/notarization path. No notarization credentials are discovered, embedded or uploaded by default.
+- Kept the candidate audio-only and retained the public alpha's hardware qualification boundaries. This version does not establish public-beta or stable readiness.
+
 ## 0.1.0-alpha.1 — 2026-10-05
 
 First open source developer alpha for the original Digidesign/Avid Mbox 2 USB on Apple silicon and macOS 26.4+.
