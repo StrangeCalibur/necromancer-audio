@@ -1,6 +1,14 @@
 # Changelog
 
-## 0.1.0-alpha.2 — unreleased beta preparation
+## 0.1.0-beta.1 — 2026-10-20
+
+First public audio beta, approved after the owner reported successful installation, playback and recording on additional laptops with the preceding notarized candidate.
+
+- Ships a Developer ID signed, Apple-notarized native setup DMG with the Necromancer Audio icon.
+- Promotes the candidate with updated version metadata and user-facing wording; audio transport, HAL and installer transaction behavior are unchanged.
+- Keeps exact Mac/OS coverage, detailed lifecycle/recovery, input-by-input coverage and measured latency as visible follow-ups. MIDI is disabled; S/PDIF remains unqualified.
+
+## 0.1.0-alpha.2 — internal beta preparation
 
 - Added the Necromancer Audio app icon, including Retina sizes and its source artwork in reproducible setup packaging.
 - Added a native macOS setup app with read-only status/plan, administrator authentication, managed installation/update, uninstall, interrupted-operation recovery and copyable diagnostics. Users need no Python or development tools.

@@ -129,8 +129,8 @@ def developer_files(release, manifest, root=ROOT):
 
 def main():
     version = (ROOT / "VERSION").read_text().strip()
-    if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+-alpha\.[0-9]+", version):
-        raise RuntimeError("Expected an explicit experimental alpha version")
+    if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+-(?:alpha|beta)\.[0-9]+", version):
+        raise RuntimeError("Expected an explicit alpha or beta prerelease version")
     source = source_files()
     release = ROOT / "build/release"
     manifest = install.read_manifest(release / "manifest.json")
@@ -168,7 +168,7 @@ def main():
               "source_sha256": tests["source_sha256"], "native_contracts_passed": len(tests["native_contracts"]),
               "python_tests_passed": tests["python_tests_passed"],
               "signing": manifest["signing"], "notarized": False, "published": False,
-              "hardware_candidate_installed": False, "hardware_qualification": "experimental; packaged candidate hardware acceptance unqualified"}
+              "hardware_candidate_installed": False, "hardware_qualification": "Owner reports prior candidate install/playback/recording on additional laptops; see docs/QUALIFICATION.md for provenance and remaining limits"}
     (destination / "release-readiness.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
 

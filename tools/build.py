@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the experimental alpha with Apple tools and a hash-pinned source dependency.
+"""Build the experimental audio prerelease with Apple tools and a hash-pinned source dependency.
 
 No device access, installation, credential discovery, uploads or publication.
 """
@@ -92,7 +92,7 @@ def dependency(offline=False):
 
 def toolchain():
     if platform.system() != "Darwin" or platform.machine() != "arm64":
-        raise RuntimeError("This alpha build targets an Apple-silicon Mac (arm64).")
+        raise RuntimeError("This build targets an Apple-silicon Mac (arm64).")
     sdk = run(["xcrun", "--show-sdk-version"], capture_output=True, text=True).stdout.strip()
     if tuple(int(x) for x in sdk.split(".")[:2]) < (27, 0):
         raise RuntimeError("A macOS 27.0 or newer SDK is required: older SDKs omit the IOUSBHost shared transaction-buffer declarations.")

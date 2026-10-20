@@ -22,7 +22,7 @@ final class SetupApp: NSObject, NSApplicationDelegate {
         title.font = .systemFont(ofSize: 25, weight: .semibold)
         let scope = NSTextField(wrappingLabelWithString: "Original Mbox 2 • firmware 1.43 • Apple silicon • stereo audio at 48 kHz")
         scope.textColor = .secondaryLabelColor
-        let note = NSTextField(wrappingLabelWithString: "Beta preparation candidate. Audio acceptance testing is still in progress. MIDI and S/PDIF are experimental.")
+        let note = NSTextField(wrappingLabelWithString: "Public audio beta. Original Mbox 2, firmware 1.43, stereo analog audio at 48 kHz. MIDI is disabled; S/PDIF is unqualified.")
         note.textColor = .secondaryLabelColor
         status.font = .systemFont(ofSize: 17, weight: .medium)
         detail.textColor = .secondaryLabelColor

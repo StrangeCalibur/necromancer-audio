@@ -112,9 +112,9 @@ def main():
     shutil.copytree(app, stage / APP_NAME)
     (stage / "Applications").symlink_to("/Applications")
     (stage / "Read me.txt").write_text("Copy Necromancer Audio Setup to Applications, then open it.\n"
-        "This is a beta preparation candidate. Hardware acceptance remains in progress.\n"
+        "Public audio beta. See the qualification record for tested scope and remaining limits.\n"
         "Original Mbox 2, existing firmware 1.43, Apple silicon, stereo analog audio at 48 kHz.\n"
-        "MIDI and S/PDIF remain experimental. See the repository qualification record.\n")
+        "MIDI is disabled and S/PDIF is unqualified. See the repository qualification record.\n")
     dmg = app.parent / (prefix + ".dmg")
     dmg.unlink(missing_ok=True)
     build.run(["/usr/bin/hdiutil", "create", "-volname", "Necromancer Audio Setup", "-srcfolder", stage,
@@ -137,7 +137,7 @@ def main():
     report = {"version": manifest["version"], "artifact": dmg.name, "sha256": checksum,
               "source_sha256": manifest["source_sha256"], "signing": manifest["signing"], "notarized": notarized,
               "requires_python_on_user_mac": False, "hardware_candidate_installed": False,
-              "qualification": "beta preparation candidate; live acceptance remains open", "published": False}
+              "qualification": "Public audio beta; see docs/QUALIFICATION.md for owner reports and remaining acceptance limits", "published": False}
     (destination / (prefix + ".json")).write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
 

@@ -1,6 +1,6 @@
 # Installation, replacement and recovery
 
-**Experimental developer alpha.** The packaged candidate has passed offline tests; live installer/lifecycle acceptance remains unqualified. Review the plan and recovery procedure before choosing to install. These commands describe the workflow, not a claim that live operations were qualified.
+**Public audio beta.** Most users should use the [native setup DMG](SETUP.md). The owner reports installation, playback and recording on additional laptops; detailed lifecycle, managed update/removal and recovery acceptance remain open. Review the plan and recovery procedure before choosing to install. These commands describe the workflow, not a claim that live operations were qualified.
 
 ## Requirements and payload
 
@@ -79,7 +79,7 @@ To select a different prepared payload, pass `--source` pointing at its release 
 
 ## Existing prototype or other unmanaged installation
 
-`--replace` does not adopt or delete legacy files. If the installer reports an unmanaged installation, stop and preserve it. Inspect its existing installer, receipt/manifest, service configuration and recovery copies before preparing a separate migration procedure. Do not remove files merely because their names match this project's targets. Migration of the historical prototype has not been qualified for this alpha.
+`--replace` does not adopt or delete legacy files. If the installer reports an unmanaged installation, stop and preserve it. Inspect its existing installer, receipt/manifest, service configuration and recovery copies before preparing a separate migration procedure. Do not remove files merely because their names match this project's targets. Migration of the historical prototype has not been qualified for this beta.
 
 ## Uninstall
 
@@ -91,7 +91,7 @@ sudo python3 tools/install.py uninstall
 
 Removal stops the managed daemon, retains a recovery copy, removes its exact audio payload and receipt, and restarts CoreAudio. Unrelated HAL plug-ins, logs and retained recovery material are preserved. Tampered or unmanaged installations are rejected instead of being removed blindly.
 
-The alpha installer does not install a MIDI login agent. Stop any manually running `mbox_midi_bridge` process separately. An older prototype's user MIDI agent belongs to that prototype's migration procedure.
+The installer does not install a MIDI login agent. Stop any manually running `mbox_midi_bridge` process separately. An older prototype's user MIDI agent belongs to that prototype's migration procedure.
 
 ## Recovery
 
