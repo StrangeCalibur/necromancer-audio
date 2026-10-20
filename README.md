@@ -2,27 +2,29 @@
 
 Experimental open source macOS support for the original Digidesign/Avid **Mbox 2 USB** interface. MIT licensed, with a user-space USB transport and a CoreAudio HAL plug-in.
 
-**`0.1.0-alpha.1` is a developer alpha for Apple silicon and macOS 26.4+.** Historical prototype playback and DI-1 guitar recording were heard and verified on one setup. The packaged candidate has passed offline tests; its live installer and broader hardware compatibility remain unqualified. See [qualification](docs/QUALIFICATION.md) before installing.
+**`0.1.0-beta.1` is the first public audio beta for Apple silicon, with a signed and notarized native installer.** The owner reports successful installation, playback and recording on additional laptops using the preceding notarized candidate. Exact laptop models and macOS versions were not supplied; this is not a compatibility matrix or a production-readiness claim. See [qualification](docs/QUALIFICATION.md).
+
+## Get the public beta
+
+Download **necromancer-audio-0.1.0-beta.1-macos-arm64-setup.dmg** from the [beta release](https://github.com/StrangeCalibur/necromancer-audio/releases/tag/v0.1.0-beta.1). Open the DMG, copy **Necromancer Audio Setup** to Applications, then open it and choose **Install / Update**. Normal administrator authentication is required. No Python, Xcode or Terminal is needed. Save audio work and close audio apps first: installation restarts CoreAudio.
+
+The release includes `SHA256SUMS`, a curated source archive and an optional unnotarized developer archive. Most users should choose the **DMG**. Read the [native setup guide](docs/SETUP.md) for removal and recovery.
 
 ## Supported profile
 
-The next source version, `0.1.0-alpha.2`, adds a [native setup app](docs/SETUP.md) as preparation for an audio-only public beta. It remains a qualification candidate until notarization and live acceptance pass. The setup app requires no Python or Xcode on the user's Mac.
-
-| Item | This alpha |
+| Item | Public audio beta |
 | --- | --- |
 | Interface | Original Mbox 2 USB, VID `0x0dba`, PID `0x3000` |
 | Existing firmware | **1.43**; no firmware updater is included |
 | Mac | Apple silicon, arm64 |
-| System | macOS 26.4 or newer |
+| System | macOS 26.4 API minimum; exact tested OS versions not recorded |
 | Build tools | Apple command-line tools with a macOS 27.0+ SDK; Python 3.10+ |
 | Audio | Fixed 48 kHz; stereo input/output; 24-bit USB PCM and Float32 CoreAudio |
-| MIDI | Opt-in experimental transport; physical DIN ports unqualified |
+| MIDI | Disabled in the installer; opt-in source transport remains unqualified |
 
-Mbox 2 Mini, Micro and Pro, Intel Macs, other firmware revisions and other sample rates are outside this alpha. Installation requires administrator access. No kernel extension, SIP change or boot-security change is required. The conservative buffers are not qualified for low-latency software monitoring.
+Mbox 2 Mini, Micro and Pro, Intel Macs, other firmware revisions and other sample rates are outside this beta. Installation requires administrator access. No kernel extension, SIP change or boot-security change is required. The conservative buffers are not qualified for low-latency software monitoring.
 
-## Get the alpha
-
-Download the source or the **unnotarized, ad-hoc signed arm64 developer archive** from [GitHub Releases](https://github.com/StrangeCalibur/necromancer-audio/releases). `SHA256SUMS` accompanies the archives. This is an expert/developer distribution, not a notarized one-click installer.
+## Build from source
 
 For a source build:
 
@@ -35,7 +37,7 @@ python3 tools/test.py --offline
 
 The first build downloads a public libASPL source archive pinned by commit and SHA-256 in [dependencies.json](dependencies.json). Python tooling uses only the standard library. Output goes to `build/`. Tests rebuild the default audio-only payload and exercise native contracts under AddressSanitizer and UndefinedBehaviorSanitizer, installer filesystem transactions and CLI guards. They do not open USB, start services or establish hardware acceptance.
 
-## Install and select the device
+## Developer installation
 
 Read [installation and recovery](docs/INSTALL.md), including the limitations for existing unmanaged/prototype installations. Save audio work and close audio clients before an installation because CoreAudio restarts.
 
